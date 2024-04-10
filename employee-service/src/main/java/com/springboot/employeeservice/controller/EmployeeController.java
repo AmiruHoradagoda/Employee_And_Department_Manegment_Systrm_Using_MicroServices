@@ -1,5 +1,6 @@
 package com.springboot.employeeservice.controller;
 
+import com.springboot.employeeservice.dto.ApiResponseDto;
 import com.springboot.employeeservice.dto.EmployeeDTO;
 import com.springboot.employeeservice.repository.EmployeeRepository;
 import com.springboot.employeeservice.service.EmployeeService;
@@ -20,8 +21,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/getEmployeeByDeptCode/{id}")
-    public ResponseEntity<EmployeeDTO> getDepartmentByDeptCode(@PathVariable(value = "id") Long ID){
-        EmployeeDTO employeeDTO = employeeService.getEmployeeByCode(ID);
-        return new ResponseEntity<EmployeeDTO>(employeeDTO,HttpStatus.OK);
+    public ResponseEntity<ApiResponseDto> getDepartmentByDeptCode(@PathVariable(value = "id") Long ID){
+        ApiResponseDto apiResponseDto = employeeService.getEmployeeByCode(ID);
+        return new ResponseEntity<>(apiResponseDto,HttpStatus.OK);
     }
 }
