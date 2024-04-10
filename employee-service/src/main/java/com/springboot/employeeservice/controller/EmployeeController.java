@@ -2,7 +2,6 @@ package com.springboot.employeeservice.controller;
 
 import com.springboot.employeeservice.dto.ApiResponseDto;
 import com.springboot.employeeservice.dto.EmployeeDTO;
-import com.springboot.employeeservice.repository.EmployeeRepository;
 import com.springboot.employeeservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

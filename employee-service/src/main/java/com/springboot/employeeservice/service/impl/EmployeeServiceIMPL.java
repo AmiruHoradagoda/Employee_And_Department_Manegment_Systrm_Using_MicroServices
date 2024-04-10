@@ -10,13 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class EmployeeServiceIMPL implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private RestTemplate restTemplate;
+    private WebClient webClient;
+
     @Override
     public EmployeeDTO saveEmplyee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee(
@@ -40,9 +42,11 @@ public class EmployeeServiceIMPL implements EmployeeService {
     @Override
     public ApiResponseDto getEmployeeByCode(Long id) {
         Employee employee = employeeRepository.findById(id).get();
-        ResponseEntity<DepartmentDTO>responseEntity =restTemplate.getForEntity("http://localhost:8080/api/v1/departments/getDepartmentByDeptCode/"+employee.getDepartmentCode(),
-                DepartmentDTO.class);
-        DepartmentDTO departmentDTO = responseEntity.getBody();
+        DepartmentDTO departmentDTO=webClient.get()
+                .uri("http://localhost:8080/api/v1/departments/getDepartmentByDeptCode/"+employee.getDepartmentCode())
+                .retrieve()// get the response data
+                .bodyToMono(DepartmentDTO.class)// Work like [ DepartmentDTO departmentDTO = responseEntity.getBody(); ]
+                .block(); // Make this as Synchronise Communication
             EmployeeDTO employeeDTO = new EmployeeDTO(
                     employee.getId(),
                     employee.getFirstName(),
