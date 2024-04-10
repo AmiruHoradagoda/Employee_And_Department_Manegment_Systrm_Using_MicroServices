@@ -5,6 +5,7 @@ import com.springboot.employeeservice.dto.DepartmentDTO;
 import com.springboot.employeeservice.dto.EmployeeDTO;
 import com.springboot.employeeservice.entity.Employee;
 import com.springboot.employeeservice.repository.EmployeeRepository;
+import com.springboot.employeeservice.service.ApiClient;
 import com.springboot.employeeservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class EmployeeServiceIMPL implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private WebClient webClient;
+    private ApiClient apiClient;
 
     @Override
     public EmployeeDTO saveEmplyee(EmployeeDTO employeeDTO) {
@@ -41,12 +42,8 @@ public class EmployeeServiceIMPL implements EmployeeService {
 
     @Override
     public ApiResponseDto getEmployeeByCode(Long id) {
+
         Employee employee = employeeRepository.findById(id).get();
-        DepartmentDTO departmentDTO=webClient.get()
-                .uri("http://localhost:8080/api/v1/departments/getDepartmentByDeptCode/"+employee.getDepartmentCode())
-                .retrieve()// get the response data
-                .bodyToMono(DepartmentDTO.class)// Work like [ DepartmentDTO departmentDTO = responseEntity.getBody(); ]
-                .block(); // Make this as Synchronise Communication
             EmployeeDTO employeeDTO = new EmployeeDTO(
                     employee.getId(),
                     employee.getFirstName(),
@@ -55,6 +52,9 @@ public class EmployeeServiceIMPL implements EmployeeService {
                     employee.getDepartmentCode()
 
             );
+
+        DepartmentDTO departmentDTO = apiClient.getDepartment(employee.getDepartmentCode());
+
         ApiResponseDto apiResponseDto = new ApiResponseDto();
         apiResponseDto.setEmployeeDTO(employeeDTO);
         apiResponseDto.setDepartmentDTO(departmentDTO);
